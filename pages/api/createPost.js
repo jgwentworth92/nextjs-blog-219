@@ -21,7 +21,7 @@ id: ${id}
 title: '${title}'
 date: '${date}'
 excerpt: '${excerpt}'
-image: '${image}'
+hero_image: '${image}'
 tags: ${JSON.stringify(tags)}
 ---
 
