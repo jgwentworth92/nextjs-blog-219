@@ -8,42 +8,78 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
-import axios from 'axios'; 
+import axios from 'axios';
 
 export default function BlogForm({ onSubmit }) {
   const [title, setTitle] = useState('');
   const [excerpt, setExcerpt] = useState('');
   const [description, setDescription] = useState('');
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
   const [tags, setTags] = useState('');
+
+  const handleImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setImage(e.target.files[0]);
+      setImagePreview(URL.createObjectURL(e.target.files[0]));
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    const postData = {
-      title,
-      excerpt,
-      description,
-      image,
-      tags: tags.split(',').map((tag) => tag.trim()),
-    };
   
+    const formData = new FormData();
+   
+    formData.append('image', image, image.name);
+    formData.append('title', title);
+    formData.append('excerpt', excerpt);
+    formData.append('description', description);
+    formData.append('tags', tags);
+    console.log('Form data:', formData);
+    const tagsArray = tags.split(',').map((tag) => tag.trim());
+
+    // Append each tag as a separate form data field
+    tagsArray.forEach((tag, index) => {
+      formData.append(`tags[${index}]`, tag);
+    });
+  
+    console.log('Form data:', formData);
+  
+    const fileArray = [];
+    for (const [key, value] of formData.entries()) {
+      if (value instanceof File) {
+        fileArray.push(value);
+      }
+      console.log(`${key}: ${value}`);
+    }
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
     try {
-      const response = await axios.post('/api/createPost', postData);
+      const response = await axios.post('/api/createPost', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: function (progressEvent) {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          console.log(`Upload progress: ${percentCompleted}%`);
+        },
+      });
+      console.log('Response:', response); // Add this line
       if (response.status === 200) {
-        onSubmit(postData);
+        onSubmit(formData);
         setTitle('');
         setExcerpt('');
         setDescription('');
-        setImage('');
+        setImage(null);
         setTags('');
       } else {
         console.error('Failed to create post');
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error:', error.response.data);
     }
-};
+  };
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
       <TextField
@@ -73,11 +109,11 @@ export default function BlogForm({ onSubmit }) {
         margin="normal"
       />
       <FormControl fullWidth variant="outlined" margin="normal">
-        <InputLabel htmlFor="image">Image URL</InputLabel>
+        <InputLabel htmlFor="image">Image</InputLabel>
         <OutlinedInput
           id="image"
-          value={image}
-          onChange={(e) => setImage(e.target.value)}
+          type="file"
+          onChange={handleImageChange}
           endAdornment={
             <InputAdornment position="end">
               <IconButton edge="end">
@@ -85,7 +121,7 @@ export default function BlogForm({ onSubmit }) {
               </IconButton>
             </InputAdornment>
           }
-          label="Image URL"
+          label="Image"
         />
       </FormControl>
       <TextField
