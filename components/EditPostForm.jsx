@@ -52,8 +52,6 @@ const EditPostForm = ({ post, onSubmit }) => {
       if (response.status === 200) {
         console.log("success");
         onSubmit(formData);
-
-        onClearForm();
       } else {
         console.error("Failed to create post");
       }
