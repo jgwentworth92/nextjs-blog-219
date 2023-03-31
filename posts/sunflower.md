@@ -1,11 +1,12 @@
 ---
-id: 1045f072-f26c-40dd-8326-c19dfe617317
-title: 'The Beauty of Sunflowers'
-date: '2023-03-30'
+title: 'The Beauty of Sunflowers changed'
+date: '2023-03-31'
 excerpt: 'Sunflowers are one of the most recognizable and beloved flowers in the world. With their bright yellow petals and cheerful disposition, they are a symbol of happiness and hope.'
 hero_image: '/how-to-grow-sunflowers-1655154120.jpg'
-tags: ["Sunflowers","Helianthus","North America","Annual","Versatile","Garden","Cut Flowers","Wildlife."]
+tags: {"0":"Sunflowers","1":"Helianthus","2":"North America","3":"Annual","4":"Versatile","5":"Garden","6":"Cut Flowers","7":"Wildlife.","":"Sunflowers, Helianthus, North America, Annual, Versatile, Garden, Cut Flowers, Wildlife."}
 ---
 
+
 Sunflowers belong to the genus Helianthus and are native to North America. They are an annual plant, meaning that they grow from seed to flower in just one growing season. Sunflowers can grow up to 15 feet tall and have flowers that can be up to 12 inches in diameter. The bright yellow petals of the sunflower are actually made up of hundreds of smaller flowers, called florets, that are arranged in a spiral pattern. This unique arrangement is a result of the sunflower's ability to follow the sun across the sky, a behavior known as heliotropism.
+
 

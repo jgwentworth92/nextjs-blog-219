@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import { v4 as uuidv4 } from "uuid";
 import nextConnect from "next-connect";
 import formidable from "formidable";
 
@@ -15,8 +14,7 @@ handler.post(async (req, res) => {
       return;
     }
 
-    const { title, excerpt, description, tags } = fields;
-    const id = uuidv4();
+    const { id, title, excerpt, description, tags } = fields;
     const date = new Date().toISOString().slice(0, 10);
 
     const postData = `---
@@ -38,18 +36,13 @@ ${description}
 
       if (files.image) {
         const image = files.image;
-        console.log(image.filepath);
         const imagePath = path.join(process.cwd(), "/public", `${id}.jpg`);
         fs.renameSync(image.filepath, imagePath);
-      } else {
-        res.status(400).json({ message: "Image file not found" });
-        return;
       }
 
-      res.status(200).json({ message: "Post created successfully" });
+      res.status(200).json({ message: "Post updated successfully" });
     } catch (error) {
-      res.status(500).json({ message: "Failed to create post", error });
-      console.log(error);
+      res.status(500).json({ message: "Failed to update post", error });
     }
   });
 });

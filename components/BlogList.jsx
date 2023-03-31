@@ -2,7 +2,7 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import styles from "../styles/BlogList.module.css";
 import Image from "next/image";
-
+import Button from "@mui/material/Button";
 function truncateSummary(content) {
   return content.slice(0, 200).trimEnd();
 }
@@ -18,7 +18,10 @@ const BlogList = ({ allBlogs }) => {
       {allBlogs && allBlogs.length > 0 ? (
         allBlogs.map((post) => (
           <li key={post.slug}>
-            <Link href={{ pathname: `/posts/${post.slug}` }} className={styles.blog__link}>
+            <Link
+              href={{ pathname: `/posts/${post.slug}` }}
+              className={styles.blog__link}
+            >
               <div className={styles.hero_image}>
                 <Image
                   width={384}
@@ -30,8 +33,15 @@ const BlogList = ({ allBlogs }) => {
               <div className={styles.blog__info}>
                 <h2>{post.frontmatter.title}</h2>
                 <h3>{reformatDate(post.frontmatter.date)}</h3>
-                <ReactMarkdown disallowedElements={["a"]}>{truncateSummary(post.markdownBody)}</ReactMarkdown>
+                <ReactMarkdown disallowedElements={["a"]}>
+                  {truncateSummary(post.markdownBody)}
+                </ReactMarkdown>
               </div>
+            </Link>
+            <Link href={`/posts/edit/${encodeURIComponent(post.slug)}`}>
+              <Button variant="contained" color="secondary">
+                Edit
+              </Button>
             </Link>
           </li>
         ))

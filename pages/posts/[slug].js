@@ -1,16 +1,15 @@
-
-
-import Image from "next/image"
-import matter from "gray-matter"
-import ReactMarkdown from "react-markdown"
+import Image from "next/image";
+import matter from "gray-matter";
+import ReactMarkdown from "react-markdown";
 import fs from "fs";
 import path from "path";
-import Layout from "../../components/Layout"
-import styles from "../../styles/Blog.module.css"
+import Layout from "../../components/Layout";
+import styles from "../../styles/Blog.module.css";
+import Link from "next/link";
 
 function reformatDate(fullDate) {
-  const date = new Date(fullDate)
-  return date.toDateString().slice(4)
+  const date = new Date(fullDate);
+  return date.toDateString().slice(4);
 }
 
 export default function BlogTemplate({ frontmatter, markdownBody, siteTitle }) {
@@ -32,15 +31,17 @@ export default function BlogTemplate({ frontmatter, markdownBody, siteTitle }) {
         <div className={styles.blog__body}>
           <ReactMarkdown>{markdownBody}</ReactMarkdown>
         </div>
-        <h2 className={styles.blog__footer}>Written By: {frontmatter.author}</h2>
+        <h2 className={styles.blog__footer}>
+          Written By: {frontmatter.author}
+        </h2>
       </article>
     </Layout>
-  )
+  );
 }
 export async function getStaticPaths() {
   const postsDirectory = `${process.cwd()}/posts`;
   const fileNames = fs.readdirSync(postsDirectory);
-  
+
   const paths = fileNames.map((fileName) => {
     const slug = fileName.replace(".md", "");
     console.log(slug);
@@ -66,8 +67,8 @@ export async function getStaticProps({ params }) {
   return {
     props: {
       frontmatter: data,
+      slug: params.slug,
       markdownBody: content,
     },
   };
 }
-

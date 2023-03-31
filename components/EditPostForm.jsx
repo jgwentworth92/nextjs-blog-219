@@ -10,12 +10,20 @@ import IconButton from "@mui/material/IconButton";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import axios from "axios";
 
-const BlogForm = ({ onSubmit }) => {
-  const [title, setTitle] = useState("");
-  const [excerpt, setExcerpt] = useState("");
-  const [description, setDescription] = useState("");
-  const [image, setImage] = useState(null);
-  const [tags, setTags] = useState("");
+const EditPostForm = ({ post, onSubmit }) => {
+  const [title, setTitle] = useState(post.frontmatter.title || "");
+  const [excerpt, setExcerpt] = useState(post.frontmatter.excerpt || "");
+  const [description, setDescription] = useState(post.markdownBody || "");
+
+  const [image, setImage] = useState(post.frontmatter.hero_image || "");
+  const [tags, setTags] = useState(post.frontmatter.tags || "");
+  console.log(post.frontmatter.hero_image);
+  const handleImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setImage(e.target.files[0]);
+    }
+  };
+
   const onClearForm = () => {
     setTitle("");
     setExcerpt("");
@@ -30,11 +38,14 @@ const BlogForm = ({ onSubmit }) => {
     formData.append("title", title);
     formData.append("excerpt", excerpt);
     formData.append("description", description);
-    formData.append("image", image);
+    if (image) {
+      formData.append("image", image);
+    }
     formData.append("tags", tags);
+    formData.append("id", post.slug);
 
     try {
-      const response = await axios.post("/api/createPost", formData, {
+      const response = await axios.post("/api/updatePost", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -50,7 +61,6 @@ const BlogForm = ({ onSubmit }) => {
       console.error("Error:", error.response ? error.response.data : error);
     }
   };
-
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
       <TextField
@@ -84,7 +94,7 @@ const BlogForm = ({ onSubmit }) => {
         <OutlinedInput
           id="image"
           type="file"
-          onChange={(e) => setImage(e.target.files[0])}
+          onChange={handleImageChange}
           endAdornment={
             <InputAdornment position="end">
               <IconButton edge="end">
@@ -95,6 +105,16 @@ const BlogForm = ({ onSubmit }) => {
           label="Image"
         />
       </FormControl>
+      {image && typeof image === "string" ? (
+        <div>
+          <img
+            src={image}
+            alt="Current hero image"
+            style={{ maxWidth: "100%", height: "auto" }}
+          />
+        </div>
+      ) : null}
+      {/* ... other form fields */}
       <TextField
         label="Tags (comma separated)"
         value={tags}
@@ -102,11 +122,12 @@ const BlogForm = ({ onSubmit }) => {
         fullWidth
         margin="normal"
       />
-      <Button type="submit" variant="contained" sx={{ mt: 2 }}>
-        Create Post
+
+      <Button type="submit" variant="contained" sx={{ mt: 3 }}>
+        Save Changes
       </Button>
     </Box>
   );
 };
 
-export default BlogForm;
+export default EditPostForm;
